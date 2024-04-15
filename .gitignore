@@ -1,7 +1,6 @@
-bot-token.js
-
 node_modules
-
+package-lock.json
+bot-token.js
 # Logs
 logs
 *.log
