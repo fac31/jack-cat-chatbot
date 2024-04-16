@@ -9,4 +9,13 @@ const BOT = new Client(
 );
 
 BOT.on("ready", (response) => {console.log("my bot is online")});
+
+BOT.on('messageCreate', (msg) => {
+    console.log('user message: ', msg.content)
+    
+    if (msg.author !== BOT.user) {
+        msg.channel.send('howdy!')
+}
+})
+
 BOT.login(BOT_TOKEN);
