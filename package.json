@@ -2,16 +2,16 @@
   "name": "jack-cat-chatbot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "type": "module",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.14.1",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "openai": "^4.33.1"
   },
   "devDependencies": {
     "eslint": "^9.0.0",
