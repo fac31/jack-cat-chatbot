@@ -1,4 +1,5 @@
-const {BOT_TOKEN} = require("./bot-token.js");
+const {BOT_TOKEN} = require("./config.js");
+const {openAI} = require("openai");
 const {Client, GatewayIntentBits} = require("discord.js");
 
 const BOT = new Client(
@@ -8,7 +9,7 @@ const BOT = new Client(
     GatewayIntentBits.GuildMembers,]}
 );
 
-BOT.on("ready", (response) => {console.log("my bot is online")});
+BOT.once("ready", (response) => {console.log("my bot is online")});
 
 BOT.on('messageCreate', (msg) => {
     console.log('user message: ', msg.content)
