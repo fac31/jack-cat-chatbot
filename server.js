@@ -21,22 +21,32 @@ BOT.on('messageCreate', (msg) => {
         console.log('user message: ', msg.content)
         // console.log('myClient ', myClient)
 
-        let AI_res = myClient.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [
-                {"role": "system", 
-                "content": "You are a helpful assistant."},
-                {"role": "user",
-                "content": msg.content}, 
-                {"role": "assistant",
-                "content": "Hi there!"}
-            ]}
-        )
- 
-        AI_res.then(data => {
-            // console.log('AI RESPONSE: ', data.choices[0].message.content)
-            msg.reply(data.choices[0].message.content)
-        })
+        // Check if bot is mentioned in message
+        if (msg.content.includes(`@1227708046810284172`)) {
+
+            let AI_res = myClient.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    {"role": "system", 
+                    "content": "You are a helpful assistant. You should reply in a sarcastic manner."},
+                    {"role": "user",
+                    "content": msg.content}, 
+                    {"role": "assistant",
+                    "content": "Hi there!"}
+                ]}
+            )
+    
+            AI_res.then(data => {
+                // console.log('AI RESPONSE: ', data.choices[0].message.content)
+                msg.reply(data.choices[0].message.content)
+            })
+            .then((r) => {
+                if (!r.ok) throw new Error(`Error in AI call! Error: ${r.status}`)
+                return r.json()
+            })
+            .catch(err => console.log('catch error ', err))
+        }
+
     }
 })
 
