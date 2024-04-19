@@ -18,11 +18,15 @@ BOT.once("ready", (response) => {console.log("my bot is online")});
 BOT.on('messageCreate', (msg) => {
     
     if (msg.author !== BOT.user) {
-        console.log('user message: ', msg.content)
-        // console.log('myClient ', myClient)
-
+        // console.log('msg content ', msg)
+        // console.log('user message: ', msg.content)
+        
         // Check if bot is mentioned in message
-        if (msg.content.includes(`@1227708046810284172`)) {
+        if (msg.content.includes(`@1227708046810284172`) || 
+        // Or if it is a reply to a chatbot message
+        (msg.channel.messages.cache.get(msg.reference.messageId).author.id === `1227708046810284172`)
+            ) {
+
 
             let AI_res = myClient.chat.completions.create({
                 model: "gpt-3.5-turbo",
@@ -37,8 +41,11 @@ BOT.on('messageCreate', (msg) => {
             )
     
             AI_res.then(data => {
-                // console.log('AI RESPONSE: ', data.choices[0].message.content)
+                // console.log('AI RESPONSE: ', data.choices[0].message)
+                // console.log('msg content', msg.reference.messageId)
                 msg.reply(data.choices[0].message.content)
+
+
             })
             .then((r) => {
                 if (!r.ok) throw new Error(`Error in AI call! Error: ${r.status}`)
