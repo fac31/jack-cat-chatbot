@@ -7,7 +7,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 
-// const myClient = new OpenAI({apiKey: openAI_KEY})
+const myClient = new OpenAI({apiKey: openAI_KEY})
 
 const BOT = new Client(
     {intents: [GatewayIntentBits.Guilds,
