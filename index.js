@@ -14,30 +14,34 @@ const BOT = new Client(
     GatewayIntentBits.GuildMembers,]}
 );
 
+BOT.commands = new Collection()
+
+
 const myClient = new OpenAI({apiKey: openAI_KEY})
 
 
-BOT.commands = new Collection()
-
-const foldersPath = path.join(__dirname, 'commands')
-const commandFolders = fs.readdirSync(foldersPath)
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder)
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
-
-    for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file)
-        const command = require(filePath)
-
-        // Set a new item in the Collection with the key as the command name and the value as the exported module
-        if ('data' in command && 'execute' in command) {
-            BOT.commands.set(command.data.name, command)
-        } else {
-            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property`)
-        }
-    }
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			BOT.commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
 }
+
+BOT.on(Events.InteractionCreate, interaction => {
+	if (!interaction.isChatInputCommand()) return;
+	console.log(interaction);
+});
 
 BOT.on(Events.InteractionCreate, async interaction => {
     
@@ -68,22 +72,17 @@ BOT.on(Events.InteractionCreate, async interaction => {
 
 
 
-
-
-
-
-
-
-BOT.once("ready", (response) => {console.log("my bot is online")});
+BOT.once(Events.ClientReady, readyClient => console.log(`Ready! Logged in as ${readyClient.user.tag}`));
 
 BOT.on('messageCreate', (msg) => {
     
     if (msg.author !== BOT.user) {
         // console.log('msg content ', msg)
-        // console.log('user message: ', msg.content)
+        console.log('user message: ', msg.content)
         
         // Check if bot is mentioned in message
-        if (msg.content.includes(`@1227708046810284172`) || 
+        if (msg.content.includes(`@1227708046810284172`) 
+        || 
         // Or if it is a reply to a chatbot message
         (msg.channel.messages.cache.get(msg.reference.messageId).author.id === `1227708046810284172`)
             ) {
@@ -102,7 +101,7 @@ BOT.on('messageCreate', (msg) => {
             )
     
             AI_res.then(data => {
-                // console.log('AI RESPONSE: ', data.choices[0].message)
+                console.log('AI RESPONSE: ', data.choices[0].message)
                 // console.log('msg content', msg.reference.messageId)
                 msg.reply(data.choices[0].message.content)
 
@@ -116,6 +115,7 @@ BOT.on('messageCreate', (msg) => {
         }
 
     }
-})
+}
+)
 
 BOT.login(BOT_TOKEN);
