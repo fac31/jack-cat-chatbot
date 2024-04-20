@@ -36,7 +36,23 @@ for (const folder of commandFolders) {
 	}
 }
 
+const eventsPath = path.join(__dirname, 'events')
+// returns an array of all the file names in the given directory and 
+// filters for only .js files. 
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
 
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file)
+    const event = require(filePath)
+
+    // callback function passed takes argument(s) returned by its respective event,
+    // collects them into an array & then calls execute on the argument array. 
+    if (event.once) {
+        BOT.once(event.name, (...args) => event.execute(...args))
+    } else {
+        BOT.on(event.name, (...args) => event.execute(...args))
+    }
+}
 
 
 // BOT.on('messageCreate', (msg) => {
