@@ -60,6 +60,7 @@ for (const file of eventFiles) {
 }
 
 
+
 // BOT.on('messageCreate', (msg) => {
     
 //     if (msg.author !== BOT.user) {
