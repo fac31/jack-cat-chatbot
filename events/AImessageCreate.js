@@ -1,6 +1,6 @@
 const { Events } = require('discord.js');
 const {OpenAI} = require("openai");
-const {openAI_KEY} = require("../config.js")
+const {openAI_KEY,clientId} = require("../config.js")
 
 
 module.exports = {
@@ -23,12 +23,12 @@ module.exports = {
         )
         // console.log('interaction.author.id', interaction.author.id)
 
-        if (interaction.author.id !== `1231183898906726430`) {
+        if (interaction.author.id !== clientId) {
             // console.log('interaction ', interaction)
             // console.log('user message/interaction.content', interaction.content)
             
             // Check if bot is mentioned in message
-            if (interaction.content.includes(`1231183898906726430`)) {
+            if (interaction.content.includes(clientId)) {
 
                 // console.log('interaction.reference ', interaction.channel.messages.cache.get(interaction.reference.messageId).author.id)
                 console.log('INSIDE THE tag BLOCK ******',)
@@ -39,16 +39,11 @@ module.exports = {
                     interaction.reply(data.choices[0].message.content)
                     // return data;
                 })
-                // .then((r) => {
-                    // console.log('r', r)
-                //     if (!r.ok) throw new Error(`Error in AI call! Error: ${r.status}`)
-                //     return r.json()
-                // })
                 .catch(err => console.log('catch error ', err))
 
             } else if (
                 interaction.channel.messages.cache.get(interaction.reference) &&
-                interaction.channel.messages.cache.get(interaction.reference.messageId).author.id === `1231183898906726430`) {
+                interaction.channel.messages.cache.get(interaction.reference.messageId).author.id === clientId) {
             // Or if it is a reply to a chatbot message
                 AI_res.then(data => {
                     // console.log('AI RESPONSE: ', data.choices[0].message)
