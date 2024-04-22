@@ -1,36 +1,41 @@
-const {BOT_TOKEN, openAI_KEY} = require("./config.js");
-const {OpenAI} = require("openai");
-const API_URL = "https://api.openai.com/v1/chat/completions"
-const {Client, Collection, Events, GatewayIntentBits} = require("discord.js");
-const { Models } = require("openai/resources/models.js");
-const fs = require('node:fs')
-const path = require('node:path')
+const { BOT_TOKEN, openAI_KEY } = require('./config.js');
+const { OpenAI } = require('openai');
+const API_URL = 'https://api.openai.com/v1/chat/completions';
+const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Models } = require('openai/resources/models.js');
+const fs = require('node:fs');
+const path = require('node:path');
 
 
-const myClient = new OpenAI({apiKey: openAI_KEY})
+const myClient = new OpenAI({ apiKey: openAI_KEY });
 
-const BOT = new Client(
-    {intents: [GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,]}
-);
+const BOT = new Client({
+	//	BOT Permissions
+	intents:
+    [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers],
+});
 
 BOT.commands = new Collection()
 
+
 const foldersPath = path.join(__dirname, 'commands');
+//	Returns an array of folder names in commands folder (commands\utility)
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
+	//	Returns an array of javascript files within utility folder
 	const commandsPath = path.join(foldersPath, folder);
 	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
 	for (const file of commandFiles) {
+		//	Returns string filepath of command file
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
 			BOT.commands.set(command.data.name, command);
-		} else {
+		}
+		else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
@@ -42,16 +47,16 @@ const eventsPath = path.join(__dirname, 'events')
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
 
 for (const file of eventFiles) {
-    const filePath = path.join(eventsPath, file)
-    const event = require(filePath)
+	const filePath = path.join(eventsPath, file)
+	const event = require(filePath)
 
-    // callback function passed takes argument(s) returned by its respective event,
-    // collects them into an array & then calls execute on the argument array. 
-    if (event.once) {
-        BOT.once(event.name, (...args) => event.execute(...args))
-    } else {
-        BOT.on(event.name, (...args) => event.execute(...args))
-    }
+	// callback function passed takes argument(s) returned by its respective event,
+	// collects them into an array & then calls execute on the argument array. 
+	if (event.once) {
+		BOT.once(event.name, (...args) => event.execute(...args))
+	} else {
+		BOT.on(event.name, (...args) => event.execute(...args))
+	}
 }
 
 
