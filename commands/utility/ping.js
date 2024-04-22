@@ -48,7 +48,6 @@ module.exports = {
                 // Update bot response once buttons are clicked. 
                 if (confirmation.customId === 'confirm') {
                     await confirmation.update({content: 'Pong!', components: []})
-                    console.log('edit msg to `Pong`!');
                 } else if (confirmation.customId === 'cancel') {
                     await confirmation.update({content: 'Game cancelled!', components: []})
                 }
