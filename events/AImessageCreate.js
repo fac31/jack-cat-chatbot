@@ -21,47 +21,22 @@ module.exports = {
                 "content": "Hi there!"}
             ]}
         )
-        // console.log('interaction.author.id', interaction.author.id)
-
         if (interaction.author.id !== clientId.toString()) {
-            // console.log('interaction ', interaction)
-            // console.log('user message/interaction.content', interaction.content)
-            
             // Check if bot is mentioned in message
-            console.log('interaction.reference ', interaction.channel.messages.cache.get(interaction.reference));
             if (interaction.content.includes(clientId.toString())) {
-
-                
-                console.log('INSIDE THE tag BLOCK ******',)
-                    // console.log('TAG interaction content', interaction.reference.messageId)
-
                 AI_res.then(data => {
-                    // console.log('AI RESPONSE: ', data.choices[0].message)
                     interaction.reply(data.choices[0].message.content)
-                    // return data;
                 })
                 .catch(err => console.log('catch error ', err))
-
             } else if (
-                interaction.reference.messageId !== null &&
+                interaction.reference !== null && 
                 interaction.channel.messages.cache.get(interaction.reference.messageId).author.id === "1231183898906726430") {
-                    console.log('INSIDE THE reply BLOCK');
-            // Or if it is a reply to a chatbot message
+                // Or if it is a reply to a chatbot message
                 AI_res.then(data => {
-                    // console.log('AI RESPONSE: ', data.choices[0].message)
-                    // console.log('interaction content', interaction.reference.messageId)
                     interaction.reply(data.choices[0].message.content)
                 })
-                // .then((r) => {
-                //     if (!r.ok) throw new Error(`Error in AI call! Error: ${r.status}`)
-                //     return r.json()
-                // })
                 .catch(err => console.log('catch error ', err))
-
-            } else {
-                console.log('******** no response necessary ********',)
             }
-    
         }
 
     }
